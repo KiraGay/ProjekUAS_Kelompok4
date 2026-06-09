@@ -4,7 +4,7 @@ Repository UAS
 ## 👥 Anggota Kelompok & Pembagian Tugas
 1. **[ARIF NUR FATAHILLAH/Ketua]** - Koordinator & Integrasi Kode (Branch Main)
 2. **[SYAKILA NADIA DERMAWAN]** - Pembuat Struktur Data (Misal: Linked List / Stack)
-3. **[ABDUK RIPKI]** - Pembuat Fitur CRUD / Menu Utama Aplikasi
+3. **[ABDUL RIPKI]** - Pembuat Fitur CRUD / Menu Utama Aplikasi
 4. **[ARIYA WIJAYA]** - Penyusun Dokumen Analisis & Alasan Pemilihan Struktur Data
 5. **[AULIA BILBINA]** - Testing Aplikasi & Bug Fixing
 
