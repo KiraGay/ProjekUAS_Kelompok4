@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Buku {
+    int idBuku; string judulBuku; string penulis; bool isTersedia;
+};
+struct NodeRiwayat {
+    string aktivitas; NodeRiwayat* next;
+};
+
+void catatRiwayat(NodeRiwayat*& head, string aktivitas) {
+    cout << "[Merekam Riwayat]: " << aktivitas << "\n";
+}
+
+void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
+    int idCari;
+    cout << "\n=========================================\n";
+    cout << "        TRANSAKSI PEMINJAMAN BUKU        \n";
+    cout << "=========================================\n";
+    cout << "Masukkan ID Buku yang dipinjam: ";
+    cin >> idCari;
+
+    // [NOTE ALGORITMA: Pass-by-Reference (&)]
+    // Menggunakan tanda & (auto& b) artinya kita mengakses buku asli di memori komputer, 
+    // bukan mengakses kopiannya. Sehingga saat statusnya diubah, data aslinya ikut berubah.
+    for (auto& b : listBuku) {
+        if (b.idBuku == idCari225) {
+            // Logika Mutasi Status: Jika buku tersedia (true), maka diubah menjadi dipinjam (false)
+            if (b.isTersedia) {
+                b.isTersedia = false;
+                cout << "Sukses: Buku dipinjam.\n";
+                // Terintegrasi langsung memanggil fungsi Linked List milik Syakila
+                catatRiwayat(headRiwayat, "Dipinjam: " + b.judulBuku);
+                return;
+            } else {
+                cout << "Info: Buku sedang dipinjam orang lain.\n";
+                return;
+            }
+        }
+    }
+    cout << "Error: ID Buku tidak ditemukan.\n";
+}
+
+void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
+    int idCari;
+    cout << "\n=========================================\n";
+    cout << "       TRANSAKSI PENGEMBALIAN BUKU       \n";
+    cout << "=========================================\n";
+    cout << "Masukkan ID Buku yang dikembalikan: ";
+    cin >> idCari;
+
+    // [NOTE ALGORITMA: Pencarian ID]
+    for (auto& b : listBuku) {
+        if (b.idBuku == idCari) {
+            // Jika statusnya false (sedang dipinjam), ubah jadi true (tersedia di rak)
+            if (!b.isTersedia) {
+                b.isTersedia = true;
+                cout << "Sukses: Buku dikembalikan ke rak.\n";
+                catatRiwayat(headRiwayat, "Dikembalikan: " + b.judulBuku);
+                return;
+            } else {
+                cout << "Info: Buku belum pernah dipinjam.\n";
+                return;
+            }
+        }
+    }
+    cout << "Error: ID Buku salah.\n";
+}
+
+int main() {
+    vector<Buku> tesData = {{101, "C++ Dasar", "Budi", true}};
+    NodeRiwayat* tesRiwayat = nullptr;
+    cout << "--- TESTING FITUR ABDUL RIPKI ---\n";
+    pinjamBuku(tesData, tesRiwayat);
+    kembalikanBuku(tesData, tesRiwayat);
+    return 0;
+}
