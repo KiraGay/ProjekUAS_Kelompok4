@@ -126,20 +126,84 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
     cout << "\n[!] INFO: Fitur 'Pengembalian Buku' sedang dikerjakan oleh Abdul Ripki.\n";
 }
 
-// ------------------- AREA ARIYA -------------------
+// --- FITUR ARIYA ---
 void tampilkanBukuAsli(const vector<Buku>& listBuku) {
-    // AULIA: Nanti isi dari Ariya ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Tampilkan Daftar Buku' sedang dikerjakan oleh Ariya.\n";
+    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
+    
+    cout << "\n===================================================================================\n";
+    cout << "                    === DAFTAR KOLEKSI BUKU (URUTAN ASLI) ===                      \n";
+    cout << "===================================================================================\n";
+    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
+    cout << "-----------------------------------------------------------------------------------\n";
+    for (const auto& b : listBuku) {
+        cout << left << setw(6) << b.idBuku 
+             << setw(26) << b.judulBuku 
+             << setw(22) << b.penulis 
+             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
+             << "Rp" << b.harga << "\n";
+    }
+    cout << "===================================================================================\n";
 }
 
 void tampilkanBukuTerurut(vector<Buku> listBuku) { 
-    // AULIA: Nanti isi dari Ariya ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Sorting Buku (A-Z)' sedang dikerjakan oleh Ariya.\n";
+    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
+    
+    int n = listBuku.size();
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (listBuku[j].judulBuku > listBuku[j+1].judulBuku) {
+                swap(listBuku[j], listBuku[j+1]); 
+            }
+        }
+    }
+    
+    cout << "\n===================================================================================\n";
+    cout << "               === LAPORAN DATA KOLEKSI BUKU (SORTING A-Z) ===                 \n";
+    cout << "===================================================================================\n";
+    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
+    cout << "-----------------------------------------------------------------------------------\n";
+    for (const auto& b : listBuku) {
+        cout << left << setw(6) << b.idBuku 
+             << setw(26) << b.judulBuku 
+             << setw(22) << b.penulis 
+             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
+             << "Rp" << b.harga << "\n";
+    }
+    cout << "===================================================================================\n";
 }
 
 void cariBuku(const vector<Buku>& listBuku) {
-    // AULIA: Nanti isi dari Ariya ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Pencarian Buku' sedang dikerjakan oleh Ariya.\n";
+    string kataKunci;
+    cout << "\n=========================================\n";
+    cout << "            PENCARIAN DATA BUKU            \n";
+    cout << "=========================================\n";
+    cout << "Masukkan Judul Buku: ";
+    cin.ignore();
+    getline(cin, kataKunci);
+
+    if (kataKunci.empty()) { cout << "Validasi: Kata kunci tidak boleh kosong!\n"; return; }
+
+    string kataKunciLower = kataKunci;
+    transform(kataKunciLower.begin(), kataKunciLower.end(), kataKunciLower.begin(), ::tolower);
+
+    bool ditemukan = false;
+    for (const auto& b : listBuku) {
+        string judulBukuLower = b.judulBuku;
+        transform(judulBukuLower.begin(), judulBukuLower.end(), judulBukuLower.begin(), ::tolower);
+
+        if (judulBukuLower.find(kataKunciLower) != string::npos) {
+            cout << "-> DATA BUKU DITEMUKAN!\n";
+            cout << "ID Buku    : " << b.idBuku << "\n";
+            cout << "Nama Buku  : " << b.judulBuku << "\n"; 
+            cout << "Penulis    : " << b.penulis << "\n";
+            cout << "Harga      : Rp" << b.harga << "\n";
+            cout << "Status     : " << (b.isTersedia ? "Tersedia" : "Dipinjam") << "\n";
+            cout << "-----------------------------------------\n";
+            ditemukan = true;
+        }
+    }
+
+    if (!ditemukan) cout << "Validasi: Buku tidak ditemukan!\n=========================================\n";
 }
 
 
