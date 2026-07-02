@@ -35,20 +35,84 @@ struct NodeRiwayat {
 // (hapus cout-nya), lalu PASTE kodingan utuh dari mereka di dalam kurung kurawal { }
 // ==============================================================================
 
-// ------------------- AREA SYAKILA -------------------
+// --- FITUR SYAKILA ---
 void tambahAntrean(queue<string>& antreanLoket) {
-    // AULIA: Nanti isi dari Syakila ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Registrasi Antrean Loket' sedang dikerjakan oleh Syakila.\n";
+    string namaVisitor;
+    cout << "\n=========================================\n";
+    cout << "        REGISTRASI ANTREAN LOKET          \n";
+    cout << "=========================================\n";
+    cout << "Masukkan Nama Pengunjung: ";
+    cin.ignore();
+    getline(cin, namaVisitor);
+    antreanLoket.push(namaVisitor);
+    cout << "Sukses: \"" << namaVisitor << "\" masuk ke antrean.\n";
 }
 
 void panggilAntrean(queue<string>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat) {
-    // AULIA: Nanti isi dari Syakila ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Panggil Antrean & Pelayanan' sedang dikerjakan oleh Syakila.\n";
+    if (antreanLoket.empty()) {
+        cout << "\nValidasi: Antrean kosong, tidak ada pengunjung.\n";
+        return;
+    }
+    
+    string pengunjungAktif = antreanLoket.front();
+    cout << "\n=========================================\n";
+    cout << "[PANGGILAN LOKET] Silakan maju: " << pengunjungAktif << "\n";
+    cout << "=========================================\n";
+    antreanLoket.pop(); 
+
+    int opsiTransaksi;
+    do {
+        cout << "\nPILIH TRANSAKSI UNTUK: " << pengunjungAktif << "\n";
+        cout << "1. Tampilkan Daftar Buku (Ariya)\n"; 
+        cout << "2. Cari Buku (ID / Nama Buku) (Ariya)\n";
+        cout << "3. Pinjam Buku (Abdul)\n";
+        cout << "4. Kembalikan Buku (Abdul)\n";
+        cout << "0. Selesai Melayani & Kembali ke Menu Utama\n";
+        cout << "-----------------------------------------\n";
+        cout << "Pilih Opsi (0-4): ";
+        
+        if (!(cin >> opsiTransaksi)) {
+            cout << "Peringatan: Masukkan angka yang valid!\n";
+            cin.clear(); cin.ignore(10000, '\n'); continue;
+        }
+
+        switch (opsiTransaksi) {
+            case 1: tampilkanBukuAsli(databaseBuku); break;
+            case 2: cariBuku(databaseBuku); break;
+            case 3: pinjamBuku(databaseBuku, headRiwayat); break;
+            case 4: kembalikanBuku(databaseBuku, headRiwayat); break;
+            case 0: cout << "\nSelesai melayani " << pengunjungAktif << ".\n"; break;
+            default: cout << "Pilihan tidak tersedia.\n";
+        }
+    } while (opsiTransaksi != 0);
+}
+
+void catatRiwayat(NodeRiwayat*& head, string aktivitas) {
+    NodeRiwayat* nodeBaru = new NodeRiwayat();
+    nodeBaru->aktivitas = aktivitas;
+    nodeBaru->next = nullptr;
+    if (head == nullptr) {
+        head = nodeBaru;
+    } else {
+        NodeRiwayat* temp = head;
+        while (temp->next != nullptr) temp = temp->next;
+        temp->next = nodeBaru;
+    }
 }
 
 void tampilkanRiwayat(NodeRiwayat* head) {
-    // AULIA: Nanti isi dari Syakila ditaruh di sini
-    cout << "\n[!] INFO: Fitur 'Lihat Riwayat Transaksi' sedang dikerjakan oleh Syakila.\n";
+    cout << "\n=========================================\n";
+    cout << "        RIWAYAT TRANSAKSI PERPUSTAKAAN    \n";
+    cout << "=========================================\n";
+    if (head == nullptr) {
+        cout << "Belum ada transaksi.\n"; return;
+    }
+    NodeRiwayat* temp = head;
+    int no = 1;
+    while (temp != nullptr) {
+        cout << no << ". " << temp->aktivitas << "\n";
+        temp = temp->next; no++;
+    }
 }
 
 // ------------------- AREA ABDUL -------------------
