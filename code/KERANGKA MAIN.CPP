@@ -35,84 +35,20 @@ struct NodeRiwayat {
 // (hapus cout-nya), lalu PASTE kodingan utuh dari mereka di dalam kurung kurawal { }
 // ==============================================================================
 
-// --- FITUR SYAKILA ---
+// ------------------- AREA SYAKILA -------------------
 void tambahAntrean(queue<string>& antreanLoket) {
-    string namaVisitor;
-    cout << "\n=========================================\n";
-    cout << "        REGISTRASI ANTREAN LOKET          \n";
-    cout << "=========================================\n";
-    cout << "Masukkan Nama Pengunjung: ";
-    cin.ignore();
-    getline(cin, namaVisitor);
-    antreanLoket.push(namaVisitor);
-    cout << "Sukses: \"" << namaVisitor << "\" masuk ke antrean.\n";
+    // AULIA: Nanti isi dari Syakila ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Registrasi Antrean Loket' sedang dikerjakan oleh Syakila.\n";
 }
 
 void panggilAntrean(queue<string>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat) {
-    if (antreanLoket.empty()) {
-        cout << "\nValidasi: Antrean kosong, tidak ada pengunjung.\n";
-        return;
-    }
-    
-    string pengunjungAktif = antreanLoket.front();
-    cout << "\n=========================================\n";
-    cout << "[PANGGILAN LOKET] Silakan maju: " << pengunjungAktif << "\n";
-    cout << "=========================================\n";
-    antreanLoket.pop(); 
-
-    int opsiTransaksi;
-    do {
-        cout << "\nPILIH TRANSAKSI UNTUK: " << pengunjungAktif << "\n";
-        cout << "1. Tampilkan Daftar Buku (Ariya)\n"; 
-        cout << "2. Cari Buku (ID / Nama Buku) (Ariya)\n";
-        cout << "3. Pinjam Buku (Abdul)\n";
-        cout << "4. Kembalikan Buku (Abdul)\n";
-        cout << "0. Selesai Melayani & Kembali ke Menu Utama\n";
-        cout << "-----------------------------------------\n";
-        cout << "Pilih Opsi (0-4): ";
-        
-        if (!(cin >> opsiTransaksi)) {
-            cout << "Peringatan: Masukkan angka yang valid!\n";
-            cin.clear(); cin.ignore(10000, '\n'); continue;
-        }
-
-        switch (opsiTransaksi) {
-            case 1: tampilkanBukuAsli(databaseBuku); break;
-            case 2: cariBuku(databaseBuku); break;
-            case 3: pinjamBuku(databaseBuku, headRiwayat); break;
-            case 4: kembalikanBuku(databaseBuku, headRiwayat); break;
-            case 0: cout << "\nSelesai melayani " << pengunjungAktif << ".\n"; break;
-            default: cout << "Pilihan tidak tersedia.\n";
-        }
-    } while (opsiTransaksi != 0);
-}
-
-void catatRiwayat(NodeRiwayat*& head, string aktivitas) {
-    NodeRiwayat* nodeBaru = new NodeRiwayat();
-    nodeBaru->aktivitas = aktivitas;
-    nodeBaru->next = nullptr;
-    if (head == nullptr) {
-        head = nodeBaru;
-    } else {
-        NodeRiwayat* temp = head;
-        while (temp->next != nullptr) temp = temp->next;
-        temp->next = nodeBaru;
-    }
+    // AULIA: Nanti isi dari Syakila ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Panggil Antrean & Pelayanan' sedang dikerjakan oleh Syakila.\n";
 }
 
 void tampilkanRiwayat(NodeRiwayat* head) {
-    cout << "\n=========================================\n";
-    cout << "        RIWAYAT TRANSAKSI PERPUSTAKAAN    \n";
-    cout << "=========================================\n";
-    if (head == nullptr) {
-        cout << "Belum ada transaksi.\n"; return;
-    }
-    NodeRiwayat* temp = head;
-    int no = 1;
-    while (temp != nullptr) {
-        cout << no << ". " << temp->aktivitas << "\n";
-        temp = temp->next; no++;
-    }
+    // AULIA: Nanti isi dari Syakila ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Lihat Riwayat Transaksi' sedang dikerjakan oleh Syakila.\n";
 }
 
 // ------------------- AREA ABDUL -------------------
@@ -126,86 +62,21 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
     cout << "\n[!] INFO: Fitur 'Pengembalian Buku' sedang dikerjakan oleh Abdul Ripki.\n";
 }
 
-// --- FITUR ARIYA ---
+// ------------------- AREA ARIYA -------------------
 void tampilkanBukuAsli(const vector<Buku>& listBuku) {
-    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
-    
-    cout << "\n===================================================================================\n";
-    cout << "                    === DAFTAR KOLEKSI BUKU (URUTAN ASLI) ===                      \n";
-    cout << "===================================================================================\n";
-    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
-    cout << "-----------------------------------------------------------------------------------\n";
-    for (const auto& b : listBuku) {
-        cout << left << setw(6) << b.idBuku 
-             << setw(26) << b.judulBuku 
-             << setw(22) << b.penulis 
-             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
-             << "Rp" << b.harga << "\n";
-    }
-    cout << "===================================================================================\n";
+    // AULIA: Nanti isi dari Ariya ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Tampilkan Daftar Buku' sedang dikerjakan oleh Ariya.\n";
 }
 
 void tampilkanBukuTerurut(vector<Buku> listBuku) { 
-    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
-    
-    int n = listBuku.size();
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (listBuku[j].judulBuku > listBuku[j+1].judulBuku) {
-                swap(listBuku[j], listBuku[j+1]); 
-            }
-        }
-    }
-    
-    cout << "\n===================================================================================\n";
-    cout << "               === LAPORAN DATA KOLEKSI BUKU (SORTING A-Z) ===                 \n";
-    cout << "===================================================================================\n";
-    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
-    cout << "-----------------------------------------------------------------------------------\n";
-    for (const auto& b : listBuku) {
-        cout << left << setw(6) << b.idBuku 
-             << setw(26) << b.judulBuku 
-             << setw(22) << b.penulis 
-             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
-             << "Rp" << b.harga << "\n";
-    }
-    cout << "===================================================================================\n";
+    // AULIA: Nanti isi dari Ariya ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Sorting Buku (A-Z)' sedang dikerjakan oleh Ariya.\n";
 }
 
 void cariBuku(const vector<Buku>& listBuku) {
-    string kataKunci;
-    cout << "\n=========================================\n";
-    cout << "            PENCARIAN DATA BUKU            \n";
-    cout << "=========================================\n";
-    cout << "Masukkan Judul Buku: ";
-    cin.ignore();
-    getline(cin, kataKunci);
-
-    if (kataKunci.empty()) { cout << "Validasi: Kata kunci tidak boleh kosong!\n"; return; }
-
-    string kataKunciLower = kataKunci;
-    transform(kataKunciLower.begin(), kataKunciLower.end(), kataKunciLower.begin(), ::tolower);
-
-    bool ditemukan = false;
-    for (const auto& b : listBuku) {
-        string judulBukuLower = b.judulBuku;
-        transform(judulBukuLower.begin(), judulBukuLower.end(), judulBukuLower.begin(), ::tolower);
-
-        if (judulBukuLower.find(kataKunciLower) != string::npos) {
-            cout << "-> DATA BUKU DITEMUKAN!\n";
-            cout << "ID Buku    : " << b.idBuku << "\n";
-            cout << "Nama Buku  : " << b.judulBuku << "\n"; 
-            cout << "Penulis    : " << b.penulis << "\n";
-            cout << "Harga      : Rp" << b.harga << "\n";
-            cout << "Status     : " << (b.isTersedia ? "Tersedia" : "Dipinjam") << "\n";
-            cout << "-----------------------------------------\n";
-            ditemukan = true;
-        }
-    }
-
-    if (!ditemukan) cout << "Validasi: Buku tidak ditemukan!\n=========================================\n";
+    // AULIA: Nanti isi dari Ariya ditaruh di sini
+    cout << "\n[!] INFO: Fitur 'Pencarian Buku' sedang dikerjakan oleh Ariya.\n";
 }
-
 
 // ==============================================================================
 // 3. MODUL AULIA (INPUT DATA BUKU)
