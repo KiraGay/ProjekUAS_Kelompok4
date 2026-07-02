@@ -28,12 +28,10 @@ struct NodeRiwayat {
     NodeRiwayat* next; // Pointer untuk menyambungkan ke riwayat selanjutnya
 };
 
-// ==============================================================================
-// 2. FUNGSI PLACEHOLDER (STUB) - AREA KERJA ANGGOTA
-// Keterangan: Ini adalah kerangka kosong. 
-// AULIA: Kalau Syakila, Abdul, atau Ariya sudah setor kode, HAPUS isi fungsi ini 
-// (hapus cout-nya), lalu PASTE kodingan utuh dari mereka di dalam kurung kurawal { }
-// ==============================================================================
+void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
+void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
+void tampilkanBukuAsli(const vector<Buku>& listBuku);
+void cariBuku(const vector<Buku>& listBuku);
 
 // --- FITUR SYAKILA ---
 void tambahAntrean(queue<string>& antreanLoket) {
