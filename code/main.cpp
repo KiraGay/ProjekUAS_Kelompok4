@@ -216,86 +216,126 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
     cout << "Error: ID Buku salah / tidak terdaftar.\n";
 }
 
-// --- FITUR ARIYA ---
-void tampilkanBukuAsli(const vector<Buku>& listBuku) {
-    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
+// --- FITUR ABDUL ---
+void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
+    string kataKunci;
+    cout << "\n=========================================\n";
+    cout << "         TRANSAKSI PEMINJAMAN BUKU        \n";
+    cout << "=========================================\n";
+    cout << "Masukkan ID Buku yang ingin dipinjam: "; 
+    cin >> kataKunci;
     
-    cout << "\n===================================================================================\n";
-    cout << "                    === DAFTAR KOLEKSI BUKU (URUTAN ASLI) ===                      \n";
-    cout << "===================================================================================\n";
-    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
-    cout << "-----------------------------------------------------------------------------------\n";
-    for (const auto& b : listBuku) {
-        cout << left << setw(6) << b.idBuku 
-             << setw(26) << b.judulBuku 
-             << setw(22) << b.penulis 
-             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
-             << "Rp" << b.harga << "\n";
+    bool isAngka = true;
+    for (char c : kataKunci) {
+        if (!isdigit(c)) { isAngka = false; break; }
     }
-    cout << "===================================================================================\n";
-}
 
-void tampilkanBukuTerurut(vector<Buku> listBuku) { 
-    if (listBuku.empty()) { cout << "\nRak kosong.\n"; return; }
-    
-    int n = listBuku.size();
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (listBuku[j].judulBuku > listBuku[j+1].judulBuku) {
-                swap(listBuku[j], listBuku[j+1]); 
+    for (auto& b : listBuku) {
+        if (isAngka && to_string(b.idBuku) == kataKunci) {
+            if (b.isTersedia) {
+                string inputTanggalPinjam, inputTanggalKembali;
+                int dPinjam, mPinjam, yPinjam, dKembali, mKembali, yKembali;
+                
+                cout << "-> BUKU DITEMUKAN!\n";
+                cout << "   Judul Buku : " << b.judulBuku << "\n";
+                cout << "-----------------------------------------\n";
+                
+                cout << "Masukkan Tanggal Pinjam (DD/MM/YYYY) : ";
+                cin >> ws; // BUG FIX: Pakai ws biar huruf gak kepotong
+                getline(cin, inputTanggalPinjam);
+                sscanf(inputTanggalPinjam.c_str(), "%d/%d/%d", &dPinjam, &mPinjam, &yPinjam);
+
+                cout << "Masukkan Tanggal Kembali (DD/MM/YYYY): ";
+                cin >> ws;
+                getline(cin, inputTanggalKembali);
+                sscanf(inputTanggalKembali.c_str(), "%d/%d/%d", &dKembali, &mKembali, &yKembali);
+                
+                b.isTersedia = false;
+                b.tglPinjam = dPinjam; b.blnPinjam = mPinjam; b.thnPinjam = yPinjam;
+                b.tglKembali = dKembali; b.blnKembali = mKembali; b.thnKembali = yKembali;
+                
+                string tglPinjamFull = to_string(dPinjam) + "/" + to_string(mPinjam) + "/" + to_string(yPinjam);
+                string tglKembaliFull = to_string(dKembali) + "/" + to_string(mKembali) + "/" + to_string(yKembali);
+
+                cout << "\nSukses: Buku \"" << b.judulBuku << "\" berhasil dipinjam.\n";
+                
+                // MENCATAT KE RIWAYAT (DENGAN FORMAT 1 KALIMAT AGAR TIDAK ERROR)
+                string logAktivitas = "[PINJAM] ID: " + to_string(b.idBuku) + " | Judul: " + b.judulBuku + " | Periode: " + tglPinjamFull + " s/d " + tglKembaliFull;
+                catatRiwayat(headRiwayat, logAktivitas);
+                return;
+            } else {
+                cout << "Info: Buku sedang dipinjam oleh orang lain.\n"; 
+                return;
             }
         }
     }
-    
-    cout << "\n===================================================================================\n";
-    cout << "               === LAPORAN DATA KOLEKSI BUKU (SORTING A-Z) ===                 \n";
-    cout << "===================================================================================\n";
-    cout << left << setw(6) << "ID" << setw(26) << "JUDUL" << setw(22) << "PENULIS" << setw(16) << "STATUS" << "HARGA\n";
-    cout << "-----------------------------------------------------------------------------------\n";
-    for (const auto& b : listBuku) {
-        cout << left << setw(6) << b.idBuku 
-             << setw(26) << b.judulBuku 
-             << setw(22) << b.penulis 
-             << setw(16) << (b.isTersedia ? "Tersedia" : "Dipinjam") 
-             << "Rp" << b.harga << "\n";
-    }
-    cout << "===================================================================================\n";
+    cout << "Error: Buku tidak ditemukan.\n";
 }
 
-void cariBuku(const vector<Buku>& listBuku) {
-    string kataKunci;
+void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat) {
+    int idCari;
     cout << "\n=========================================\n";
-    cout << "            PENCARIAN DATA BUKU            \n";
+    cout << "        TRANSAKSI PENGEMBALIAN BUKU       \n";
     cout << "=========================================\n";
-    cout << "Masukkan Judul Buku: ";
-    cin.ignore();
-    getline(cin, kataKunci);
+    cout << "Masukkan ID Buku yang ingin dikembalikan: "; cin >> idCari;
+    
+    for (auto& b : listBuku) {
+        if (b.idBuku == idCari) {
+            if (!b.isTersedia) {
+                // Hitung durasi
+                long long totalHariPinjam = (b.thnPinjam * 365) + (b.blnPinjam * 30) + b.tglPinjam;
+                long long totalHariKembali = (b.thnKembali * 365) + (b.blnKembali * 30) + b.tglKembali;
+                long long durationPinjam = totalHariKembali - totalHariPinjam;
+                if (durationPinjam < 0) durationPinjam = 0; 
+                
+                cout << "\nData Peminjaman Ditemukan:\n";
+                cout << "- Judul Buku    : " << b.judulBuku << "\n";
+                cout << "- Durasi Pinjam : " << durationPinjam << " Hari\n";
 
-    if (kataKunci.empty()) { cout << "Validasi: Kata kunci tidak boleh kosong!\n"; return; }
+                char statusHilang;
+                cout << "\nApakah buku ini hilang? (y/t)  : "; cin >> statusHilang;
 
-    string kataKunciLower = kataKunci;
-    transform(kataKunciLower.begin(), kataKunciLower.end(), kataKunciLower.begin(), ::tolower);
+                long long dendaHitung = 0;
+                string catatanDenda = "Tanpa Denda";
 
-    bool ditemukan = false;
-    for (const auto& b : listBuku) {
-        string judulBukuLower = b.judulBuku;
-        transform(judulBukuLower.begin(), judulBukuLower.end(), judulBukuLower.begin(), ::tolower);
+                cout << "\n=========================================\n";
+                cout << "Sukses: Pengembalian Buku Berhasil.\n";
 
-        if (judulBukuLower.find(kataKunciLower) != string::npos) {
-            cout << "-> DATA BUKU DITEMUKAN!\n";
-            cout << "ID Buku    : " << b.idBuku << "\n";
-            cout << "Nama Buku  : " << b.judulBuku << "\n"; 
-            cout << "Penulis    : " << b.penulis << "\n";
-            cout << "Harga      : Rp" << b.harga << "\n";
-            cout << "Status     : " << (b.isTersedia ? "Tersedia" : "Dipinjam") << "\n";
-            cout << "-----------------------------------------\n";
-            ditemukan = true;
+                // LOGIKA DENDA & KETERANGAN (SESUAI REQUEST)
+                if (statusHilang == 'y' || statusHilang == 'Y') {
+                    dendaHitung = b.harga;
+                    catatanDenda = "Buku Hilang (Denda 100%)";
+                    cout << "Status Buku      : BUKU INI HILANG\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                } 
+                else if (durationPinjam > 30) {
+                    dendaHitung = b.harga / 2;
+                    long long hariTelat = durationPinjam - 30; // Selisih hari telat
+                    catatanDenda = "Telat " + to_string(hariTelat) + " Hari (Denda 50%)";
+                    cout << "Status Buku      : BUKU INI TERLAMBAT\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                } 
+                else {
+                    cout << "Status Buku      : TEPAT WAKTU\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                }
+
+                b.denda = dendaHitung; 
+                b.isTersedia = true; 
+                
+                cout << "Total Denda      : Rp" << b.denda << "\n";
+
+                // MENCATAT PENGEMBALIAN KE RIWAYAT (DENGAN FORMAT 1 KALIMAT AGAR TIDAK ERROR)
+                string logAktivitas = "[KEMBALI] ID: " + to_string(b.idBuku) + " | Judul: " + b.judulBuku + " | Denda: Rp" + to_string(b.denda);
+                catatRiwayat(headRiwayat, logAktivitas);
+                return;
+            } else {
+                cout << "Info: Buku dengan ID ini belum pernah dipinjam.\n"; return;
+            }
         }
     }
-
-    if (!ditemukan) cout << "Validasi: Buku tidak ditemukan!\n=========================================\n";
+    cout << "Error: ID Buku salah / tidak terdaftar.\n";
 }
-
 
 // ==============================================================================
 // 3. MODUL AULIA (INPUT DATA BUKU)
