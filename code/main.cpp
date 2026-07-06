@@ -33,16 +33,18 @@ struct NodeRiwayat {
     NodeRiwayat* next; // Pointer untuk menyambungkan ke riwayat selanjutnya
 };
 
+
 void tambahAntrean(queue<Mahasiswa>& antreanLoket);
 void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat);
-void catatRiwayat(NodeRiwayat*& head, string aktivitas);
-void tampilkanRiwayat(NodeRiwayat* head);
+void catatRiwayat(NodeRiwayat*& head, string aktivitas); // <-- INI YANG BIKIN ERROR KALAU HILANG
+void tampilkanRiwayat(NodeRiwayat* head);                // <-- INI JUGA
 void tambahBuku(vector<Buku>& listBuku);
 void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void tampilkanBukuAsli(const vector<Buku>& listBuku);
 void tampilkanBukuTerurut(vector<Buku> listBuku);
 void cariBuku(const vector<Buku>& listBuku);
+
 
 void tambahAntrean(queue<Mahasiswa>& antreanLoket) {
     Mahasiswa mhsBaru;
