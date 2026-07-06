@@ -138,6 +138,123 @@ void tampilkanRiwayat(NodeRiwayat* head) {
     cout << "===============================================================================\n";
 }
 
+// --- FITUR ABDUL ---
+void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat, Mahasiswa mhsAktif) {
+    string kataKunci;
+    cout << "\n=========================================\n";
+    cout << "         TRANSAKSI PEMINJAMAN BUKU        \n";
+    cout << "=========================================\n";
+    cout << "Masukkan ID Buku yang ingin dipinjam: "; 
+    cin >> kataKunci;
+    
+    bool isAngka = true;
+    for (char c : kataKunci) {
+        if (!isdigit(c)) { isAngka = false; break; }
+    }
+
+    for (auto& b : listBuku) {
+        if (isAngka && to_string(b.idBuku) == kataKunci) {
+            if (b.isTersedia) {
+                string inputTanggalPinjam, inputTanggalKembali;
+                int dPinjam, mPinjam, yPinjam, dKembali, mKembali, yKembali;
+                
+                cout << "-> BUKU DITEMUKAN!\n";
+                cout << "   Judul Buku : " << b.judulBuku << "\n";
+                cout << "-----------------------------------------\n";
+                
+                cout << "Masukkan Tanggal Pinjam (DD/MM/YYYY) : ";
+                cin >> ws; 
+                getline(cin, inputTanggalPinjam);
+                sscanf(inputTanggalPinjam.c_str(), "%d/%d/%d", &dPinjam, &mPinjam, &yPinjam);
+
+                cout << "Masukkan Tanggal Kembali (DD/MM/YYYY): ";
+                cin >> ws;
+                getline(cin, inputTanggalKembali);
+                sscanf(inputTanggalKembali.c_str(), "%d/%d/%d", &dKembali, &mKembali, &yKembali);
+                
+                b.isTersedia = false;
+                b.tglPinjam = dPinjam; b.blnPinjam = mPinjam; b.thnPinjam = yPinjam;
+                b.tglKembali = dKembali; b.blnKembali = mKembali; b.thnKembali = yKembali;
+                
+                string tglPinjamFull = to_string(dPinjam) + "/" + to_string(mPinjam) + "/" + to_string(yPinjam);
+                string tglKembaliFull = to_string(dKembali) + "/" + to_string(mKembali) + "/" + to_string(yKembali);
+
+                cout << "\nSukses: Buku \"" << b.judulBuku << "\" berhasil dipinjam.\n";
+                
+                string logAktivitas = "[PINJAM] Peminjam: " + mhsAktif.nama + " (NIM: " + mhsAktif.nim + ") | Buku: " + b.judulBuku + " (ID: " + to_string(b.idBuku) + ") | Tgl: " + tglPinjamFull + " s/d " + tglKembaliFull;
+                catatRiwayat(headRiwayat, logAktivitas);
+                return;
+            } else {
+                cout << "Info: Buku sedang dipinjam oleh orang lain.\n"; 
+                return;
+            }
+        }
+    }
+    cout << "Error: Buku tidak ditemukan.\n";
+}
+
+void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat, Mahasiswa mhsAktif) {
+    int idCari;
+    cout << "\n=========================================\n";
+    cout << "        TRANSAKSI PENGEMBALIAN BUKU       \n";
+    cout << "=========================================\n";
+    cout << "Masukkan ID Buku yang ingin dikembalikan: "; cin >> idCari;
+    
+    for (auto& b : listBuku) {
+        if (b.idBuku == idCari) {
+            if (!b.isTersedia) {
+                long long totalHariPinjam = (b.thnPinjam * 365) + (b.blnPinjam * 30) + b.tglPinjam;
+                long long totalHariKembali = (b.thnKembali * 365) + (b.blnKembali * 30) + b.tglKembali;
+                long long durationPinjam = totalHariKembali - totalHariPinjam;
+                if (durationPinjam < 0) durationPinjam = 0; 
+                
+                cout << "\nData Peminjaman Ditemukan:\n";
+                cout << "- Judul Buku    : " << b.judulBuku << "\n";
+                cout << "- Durasi Pinjam : " << durationPinjam << " Hari\n";
+
+                char statusHilang;
+                cout << "\nApakah buku ini hilang? (y/t)  : "; cin >> statusHilang;
+
+                long long dendaHitung = 0;
+                string catatanDenda = "Tanpa Denda";
+
+                cout << "\n=========================================\n";
+                cout << "Sukses: Pengembalian Buku Berhasil.\n";
+
+                if (statusHilang == 'y' || statusHilang == 'Y') {
+                    dendaHitung = b.harga;
+                    catatanDenda = "Buku Hilang (Denda 100%)";
+                    cout << "Status Buku      : BUKU INI HILANG\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                } 
+                else if (durationPinjam > 30) {
+                    dendaHitung = b.harga / 2;
+                    long long hariTelat = durationPinjam - 30; 
+                    catatanDenda = "Telat " + to_string(hariTelat) + " Hari (Denda 50%)";
+                    cout << "Status Buku      : BUKU INI TERLAMBAT\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                } 
+                else {
+                    cout << "Status Buku      : TEPAT WAKTU\n";
+                    cout << "Keterangan Denda : " << catatanDenda << "\n";
+                }
+
+                b.denda = dendaHitung; 
+                b.isTersedia = true; 
+                
+                cout << "Total Denda      : Rp" << b.denda << "\n";
+
+                string logAktivitas = "[KEMBALI] Peminjam: " + mhsAktif.nama + " (NIM: " + mhsAktif.nim + ") | Buku: " + b.judulBuku + " (ID: " + to_string(b.idBuku) + ") | Denda: Rp" + to_string(b.denda);
+                catatRiwayat(headRiwayat, logAktivitas);
+                return;
+            } else {
+                cout << "Info: Buku dengan ID ini belum pernah dipinjam.\n"; return;
+            }
+        }
+    }
+    cout << "Error: ID Buku salah / tidak terdaftar.\n";
+}
+
 
 // ==============================================================================
 // 3. MODUL AULIA (INPUT DATA BUKU)
