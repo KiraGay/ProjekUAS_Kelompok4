@@ -38,34 +38,36 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void tampilkanBukuAsli(const vector<Buku>& listBuku);
 void cariBuku(const vector<Buku>& listBuku);
 
-// --- FITUR SYAKILA ---
-void tambahAntrean(queue<string>& antreanLoket) {
-    string namaVisitor;
+void tambahAntrean(queue<Mahasiswa>& antreanLoket) {
+    Mahasiswa mhsBaru;
     cout << "\n=========================================\n";
     cout << "        REGISTRASI ANTREAN LOKET          \n";
     cout << "=========================================\n";
-    cout << "Masukkan Nama Pengunjung: ";
-    cin.ignore();
-    getline(cin, namaVisitor);
-    antreanLoket.push(namaVisitor);
-    cout << "Sukses: \"" << namaVisitor << "\" masuk ke antrean.\n";
+    cout << "Masukkan NIM Mahasiswa  : ";
+    cin >> ws; // Membersihkan buffer
+    getline(cin, mhsBaru.nim);
+    cout << "Masukkan Nama Mahasiswa : ";
+    getline(cin, mhsBaru.nama);
+    
+    antreanLoket.push(mhsBaru);
+    cout << "Sukses: \"" << mhsBaru.nama << "\" (NIM: " << mhsBaru.nim << ") masuk ke antrean.\n";
 }
 
-void panggilAntrean(queue<string>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat) {
+void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat) {
     if (antreanLoket.empty()) {
         cout << "\nValidasi: Antrean kosong, tidak ada pengunjung.\n";
         return;
     }
     
-    string pengunjungAktif = antreanLoket.front();
+    Mahasiswa mhsAktif = antreanLoket.front();
     cout << "\n=========================================\n";
-    cout << "[PANGGILAN LOKET] Silakan maju: " << pengunjungAktif << "\n";
+    cout << "[PANGGILAN LOKET] Silakan maju: " << mhsAktif.nama << " (" << mhsAktif.nim << ")\n";
     cout << "=========================================\n";
     antreanLoket.pop(); 
 
     int opsiTransaksi;
     do {
-        cout << "\nPILIH TRANSAKSI UNTUK: " << pengunjungAktif << "\n";
+        cout << "\nPILIH TRANSAKSI UNTUK [" << mhsAktif.nama << "]:\n";
         cout << "1. Tampilkan Daftar Buku (Ariya)\n"; 
         cout << "2. Cari Buku (ID / Nama Buku) (Ariya)\n";
         cout << "3. Pinjam Buku (Abdul)\n";
@@ -84,38 +86,29 @@ void panggilAntrean(queue<string>& antreanLoket, vector<Buku>& databaseBuku, Nod
             case 2: cariBuku(databaseBuku); break;
             case 3: pinjamBuku(databaseBuku, headRiwayat); break;
             case 4: kembalikanBuku(databaseBuku, headRiwayat); break;
-            case 0: cout << "\nSelesai melayani " << pengunjungAktif << ".\n"; break;
+            case 0: cout << "\nSelesai melayani " << mhsAktif.nama << ".\n"; break;
             default: cout << "Pilihan tidak tersedia.\n";
         }
     } while (opsiTransaksi != 0);
 }
 
-void catatRiwayat(NodeRiwayat*& head, string aktivitas) {
-    NodeRiwayat* nodeBaru = new NodeRiwayat();
-    nodeBaru->aktivitas = aktivitas;
-    nodeBaru->next = nullptr;
+void tampilkanRiwayat(NodeRiwayat* head) {
+    cout << "\n===============================================================================\n";
+    cout << "                     RIWAYAT TRANSAKSI PERPUSTAKAAN                            \n";
+    cout << "===============================================================================\n";
+    cout << left << setw(5) << "NO" << "DETAIL AKTIVITAS" << "\n";
+    cout << "-------------------------------------------------------------------------------\n";
     if (head == nullptr) {
-        head = nodeBaru;
+        cout << "Belum ada transaksi yang tercatat.\n"; 
     } else {
         NodeRiwayat* temp = head;
-        while (temp->next != nullptr) temp = temp->next;
-        temp->next = nodeBaru;
+        int no = 1;
+        while (temp != nullptr) {
+            cout << left << setw(5) << no << temp->aktivitas << "\n";
+            temp = temp->next; no++;
+        }
     }
-}
-
-void tampilkanRiwayat(NodeRiwayat* head) {
-    cout << "\n=========================================\n";
-    cout << "        RIWAYAT TRANSAKSI PERPUSTAKAAN    \n";
-    cout << "=========================================\n";
-    if (head == nullptr) {
-        cout << "Belum ada transaksi.\n"; return;
-    }
-    NodeRiwayat* temp = head;
-    int no = 1;
-    while (temp != nullptr) {
-        cout << no << ". " << temp->aktivitas << "\n";
-        temp = temp->next; no++;
-    }
+    cout << "===============================================================================\n";
 }
 
 // --- FITUR ABDUL ---
