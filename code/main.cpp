@@ -8,17 +8,13 @@
 #include <cstdio>
 using namespace std;
 
-// ==============================================================================
-// 1. STRUKTUR DATA UTAMA (FONDASI)
-// Keterangan: Ini adalah "cetakan" data. Semua anggota bergantung pada cetakan ini.
-// AULIA: JANGAN ubah bagian ini tanpa kesepakatan dengan anggota lain!
-// ==============================================================================
 struct Buku {
     int idBuku;
     string judulBuku;
     string penulis;
     bool isTersedia;
     long long harga; 
+    long long denda; // <-- Denda wajib ada di sini
     int tglPinjam, blnPinjam, thnPinjam;
     int tglKembali, blnKembali, thnKembali;
 };
@@ -29,14 +25,15 @@ struct Mahasiswa {
 };
 
 struct NodeRiwayat {
-    string aktivitas;
-    NodeRiwayat* next; // Pointer untuk menyambungkan ke riwayat selanjutnya
+    string aktivitas;  // <-- Cukup 1 variabel ini saja, super aman!
+    NodeRiwayat* next; 
 };
+
 
 void tambahAntrean(queue<Mahasiswa>& antreanLoket);
 void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat);
-void catatRiwayat(NodeRiwayat*& head, string aktivitas);
-void tampilkanRiwayat(NodeRiwayat* head);
+void catatRiwayat(NodeRiwayat*& head, string aktivitas); // <-- INI YANG BIKIN ERROR KALAU HILANG
+void tampilkanRiwayat(NodeRiwayat* head);                // <-- INI JUGA
 void tambahBuku(vector<Buku>& listBuku);
 void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
