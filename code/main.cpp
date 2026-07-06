@@ -23,14 +23,25 @@ struct Buku {
     int tglKembali, blnKembali, thnKembali;
 };
 
+struct Mahasiswa {
+    string nama;
+    string nim;
+};
+
 struct NodeRiwayat {
     string aktivitas;
     NodeRiwayat* next; // Pointer untuk menyambungkan ke riwayat selanjutnya
 };
 
+void tambahAntrean(queue<Mahasiswa>& antreanLoket);
+void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, NodeRiwayat*& headRiwayat);
+void catatRiwayat(NodeRiwayat*& head, string aktivitas);
+void tampilkanRiwayat(NodeRiwayat* head);
+void tambahBuku(vector<Buku>& listBuku);
 void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void tampilkanBukuAsli(const vector<Buku>& listBuku);
+void tampilkanBukuTerurut(vector<Buku> listBuku);
 void cariBuku(const vector<Buku>& listBuku);
 
 // --- FITUR SYAKILA ---
