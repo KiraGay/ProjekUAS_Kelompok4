@@ -40,15 +40,14 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat);
 void tampilkanBukuAsli(const vector<Buku>& listBuku);
 void tampilkanBukuTerurut(vector<Buku> listBuku);
 void cariBuku(const vector<Buku>& listBuku);
-
-
+// --- FITUR SYAKILA ---
 void tambahAntrean(queue<Mahasiswa>& antreanLoket) {
     Mahasiswa mhsBaru;
     cout << "\n=========================================\n";
     cout << "        REGISTRASI ANTREAN LOKET          \n";
     cout << "=========================================\n";
     cout << "Masukkan NIM Mahasiswa  : ";
-    cin >> ws; // Membersihkan buffer
+    cin >> ws; 
     getline(cin, mhsBaru.nim);
     cout << "Masukkan Nama Mahasiswa : ";
     getline(cin, mhsBaru.nama);
@@ -73,7 +72,7 @@ void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, 
     do {
         cout << "\nPILIH TRANSAKSI UNTUK [" << mhsAktif.nama << "]:\n";
         cout << "1. Tampilkan Daftar Buku (Ariya)\n"; 
-        cout << "2. Cari Buku (ID / Nama Buku) (Ariya)\n";
+        cout << "2. Cari Buku (Ariya)\n";
         cout << "3. Pinjam Buku (Abdul)\n";
         cout << "4. Kembalikan Buku (Abdul)\n";
         cout << "0. Selesai Melayani & Kembali ke Menu Utama\n";
@@ -88,27 +87,53 @@ void panggilAntrean(queue<Mahasiswa>& antreanLoket, vector<Buku>& databaseBuku, 
         switch (opsiTransaksi) {
             case 1: tampilkanBukuAsli(databaseBuku); break;
             case 2: cariBuku(databaseBuku); break;
-            case 3: pinjamBuku(databaseBuku, headRiwayat); break;
-            case 4: kembalikanBuku(databaseBuku, headRiwayat); break;
+            // FIX PENTING: Mengirim mhsAktif ke fungsi Abdul
+            case 3: pinjamBuku(databaseBuku, headRiwayat, mhsAktif); break;
+            case 4: kembalikanBuku(databaseBuku, headRiwayat, mhsAktif); break;
             case 0: cout << "\nSelesai melayani " << mhsAktif.nama << ".\n"; break;
             default: cout << "Pilihan tidak tersedia.\n";
         }
     } while (opsiTransaksi != 0);
 }
 
+// FIX PENTING: catatRiwayat disesuaikan untuk menerima 7 variabel
+void catatRiwayat(NodeRiwayat*& head, string tipe, string nama, string nim, string buku, string tglP, string tglK, string denda) {
+    NodeRiwayat* nodeBaru = new NodeRiwayat();
+    nodeBaru->tipeTransaksi = tipe;
+    nodeBaru->namaUser = nama;
+    nodeBaru->nimUser = nim;
+    nodeBaru->detailBuku = buku;
+    nodeBaru->tglPinjamStr = tglP;
+    nodeBaru->tglKembaliStr = tglK;
+    nodeBaru->infoDenda = denda;
+    nodeBaru->next = nullptr;
+
+    if (head == nullptr) {
+        head = nodeBaru;
+    } else {
+        NodeRiwayat* temp = head;
+        while (temp->next != nullptr) temp = temp->next;
+        temp->next = nodeBaru;
+    }
+}
+
+// FIX PENTING: Tampilan riwayat sekarang memunculkan 7 variabel dengan rapi
 void tampilkanRiwayat(NodeRiwayat* head) {
     cout << "\n===============================================================================\n";
     cout << "                     RIWAYAT TRANSAKSI PERPUSTAKAAN                            \n";
     cout << "===============================================================================\n";
-    cout << left << setw(5) << "NO" << "DETAIL AKTIVITAS" << "\n";
-    cout << "-------------------------------------------------------------------------------\n";
     if (head == nullptr) {
         cout << "Belum ada transaksi yang tercatat.\n"; 
     } else {
         NodeRiwayat* temp = head;
         int no = 1;
         while (temp != nullptr) {
-            cout << left << setw(5) << no << temp->aktivitas << "\n";
+            cout << no << ". Transaksi : " << temp->tipeTransaksi << "\n";
+            cout << "   Peminjam  : " << temp->namaUser << " (NIM: " << temp->nimUser << ")\n";
+            cout << "   Buku      : " << temp->detailBuku << "\n";
+            cout << "   Periode   : " << temp->tglPinjamStr << " s/d " << temp->tglKembaliStr << "\n";
+            cout << "   Denda     : " << temp->infoDenda << "\n";
+            cout << "-------------------------------------------------------------------------------\n";
             temp = temp->next; no++;
         }
     }
