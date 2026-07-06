@@ -23,6 +23,11 @@ struct Buku {
     int tglKembali, blnKembali, thnKembali;
 };
 
+struct Mahasiswa {
+    string nama;
+    string nim;
+};
+
 struct NodeRiwayat {
     string aktivitas;
     NodeRiwayat* next; // Pointer untuk menyambungkan ke riwayat selanjutnya
