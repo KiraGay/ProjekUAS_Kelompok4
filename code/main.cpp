@@ -162,19 +162,22 @@ void pinjamBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat, Mahasiswa mhs
                 cout << "   Judul Buku : " << b.judulBuku << "\n";
                 cout << "-----------------------------------------\n";
                 
-                cout << "Masukkan Tanggal Pinjam (DD/MM/YYYY) : ";
+                cout << "Masukkan Tanggal Pinjam (DD/MM/YYYY)  : ";
                 cin >> ws; 
                 getline(cin, inputTanggalPinjam);
                 sscanf(inputTanggalPinjam.c_str(), "%d/%d/%d", &dPinjam, &mPinjam, &yPinjam);
 
-                cout << "Masukkan Tanggal Kembali (DD/MM/YYYY): ";
+                // FIX: Penamaan diperjelas menjadi TENGGAT WAKTU
+                cout << "Masukkan Tenggat Kembali (DD/MM/YYYY) : ";
                 cin >> ws;
                 getline(cin, inputTanggalKembali);
                 sscanf(inputTanggalKembali.c_str(), "%d/%d/%d", &dKembali, &mKembali, &yKembali);
                 
                 b.isTersedia = false;
                 b.tglPinjam = dPinjam; b.blnPinjam = mPinjam; b.thnPinjam = yPinjam;
-                b.tglKembali = dKembali; b.blnKembali = mKembali; b.thnKembali = yKembali;
+                
+                // Disimpan sebagai batas waktu (Tenggat)
+                b.tglKembali = dKembali; b.blnKembali = mKembali; b.thnKembali = yKembali; 
                 
                 string tglPinjamFull = to_string(dPinjam) + "/" + to_string(mPinjam) + "/" + to_string(yPinjam);
                 string tglKembaliFull = to_string(dKembali) + "/" + to_string(mKembali) + "/" + to_string(yKembali);
@@ -203,14 +206,24 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat, Mahasiswa
     for (auto& b : listBuku) {
         if (b.idBuku == idCari) {
             if (!b.isTersedia) {
-                long long totalHariPinjam = (b.thnPinjam * 365) + (b.blnPinjam * 30) + b.tglPinjam;
-                long long totalHariKembali = (b.thnKembali * 365) + (b.blnKembali * 30) + b.tglKembali;
-                long long durationPinjam = totalHariKembali - totalHariPinjam;
-                if (durationPinjam < 0) durationPinjam = 0; 
+                // FIX FITUR KETERLAMBATAN: Meminta tanggal hari ini (saat buku dikembalikan)
+                string inputTglDikembalikan;
+                int dAktual, mAktual, yAktual;
+                
+                cout << "Masukkan Tgl Dikembalikan (DD/MM/YYYY): ";
+                cin >> ws;
+                getline(cin, inputTglDikembalikan);
+                sscanf(inputTglDikembalikan.c_str(), "%d/%d/%d", &dAktual, &mAktual, &yAktual);
+
+                // Konversi tanggal ke hari untuk mencari selisih
+                long long hariTenggat = (b.thnKembali * 365) + (b.blnKembali * 30) + b.tglKembali;
+                long long hariDikembalikan = (yAktual * 365) + (mAktual * 30) + dAktual;
+                long long hariTelat = hariDikembalikan - hariTenggat;
+                if (hariTelat < 0) hariTelat = 0; // Kalau dibalikin sebelum tenggat, hitung 0
                 
                 cout << "\nData Peminjaman Ditemukan:\n";
-                cout << "- Judul Buku    : " << b.judulBuku << "\n";
-                cout << "- Durasi Pinjam : " << durationPinjam << " Hari\n";
+                cout << "- Judul Buku      : " << b.judulBuku << "\n";
+                cout << "- Tenggat Kembali : " << b.tglKembali << "/" << b.blnKembali << "/" << b.thnKembali << "\n";
 
                 char statusHilang;
                 cout << "\nApakah buku ini hilang? (y/t)  : "; cin >> statusHilang;
@@ -221,16 +234,19 @@ void kembalikanBuku(vector<Buku>& listBuku, NodeRiwayat*& headRiwayat, Mahasiswa
                 cout << "\n=========================================\n";
                 cout << "Sukses: Pengembalian Buku Berhasil.\n";
 
+                // LOGIKA DENDA KETERLAMBATAN
                 if (statusHilang == 'y' || statusHilang == 'Y') {
                     dendaHitung = b.harga;
-                    catatanDenda = "Buku Hilang (Denda 100%)";
+                    catatanDenda = "Buku Hilang (Denda 100% harga buku)";
                     cout << "Status Buku      : BUKU INI HILANG\n";
                     cout << "Keterangan Denda : " << catatanDenda << "\n";
                 } 
-                else if (durationPinjam > 30) {
-                    dendaHitung = b.harga / 2;
-                    long long hariTelat = durationPinjam - 30; 
-                    catatanDenda = "Telat " + to_string(hariTelat) + " Hari (Denda 50%)";
+                else if (hariTelat > 0) {
+                    // Denda Rp 2.000 per hari
+                    long long dendaPerHari = 2000;
+                    dendaHitung = hariTelat * dendaPerHari;
+                    catatanDenda = "Telat " + to_string(hariTelat) + " Hari (Denda Rp2.000/hari)";
+                    
                     cout << "Status Buku      : BUKU INI TERLAMBAT\n";
                     cout << "Keterangan Denda : " << catatanDenda << "\n";
                 } 
